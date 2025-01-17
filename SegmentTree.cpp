@@ -1,5 +1,5 @@
 template<typename T>
-class segment_tree { //1-based
+class SegmentTree { //1-based
 #define LEFT (idx << 1)
 #define RIGHT (idx << 1 | 1)
 #define MID ((start + end) >> 1)
@@ -58,8 +58,8 @@ class segment_tree { //1-based
         tree[idx] = merge(tree[LEFT], tree[RIGHT]);
     }
 public:
-    segment_tree(int n) : n(n), tree(n << 2), lazy(n << 2) {}
-    segment_tree(const vector<T>& v) {
+    SegmentTree(int n) : n(n), tree(n << 2), lazy(n << 2) {}
+    SegmentTree(const vector<T>& v) {
         n = v.size() - 1;
         tree = vector<T>(n << 2);
         lazy = vector<T>(n << 2);
