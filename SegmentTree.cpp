@@ -1,56 +1,56 @@
-template<typename T>
-class SegmentTree { //1-based
+// implement your custom node
+struct node {
+    int cnt;
+    node(): cnt(0) {}
+    node(int p): cnt(p) {}
+};
+class SegmentTree { // 1-based
 #define LEFT (idx << 1)
 #define RIGHT (idx << 1 | 1)
 #define MID ((start + end) >> 1)
     int n;
-    vector<T> tree, lazy;
-    T merge(const T& left, const T& right) {}
-    void pushdown(int idx, int start, int end) {
-        if (lazy[idx] == 0)
+    vector<node> tree;
+    vector<int> lazy;
+
+    // implement your custom merge
+    node merge(const node l, const node r) {}
+    
+    void push(int idx, int start, int end) {
+        if (lazy[idx] == 0) // not visited
             return;
-        // update tree[idx] with lazy[idx]
+        // update tree with lazy
         tree[idx] += lazy[idx];
-        if (start != end) {
-            lazy[LEFT] += lazy[idx];
-            lazy[RIGHT] += lazy[idx];
+        if (start != end) { // update lazy children
+            lazy[LEFT] = lazy[idx];
+            lazy[RIGHT] = lazy[idx];
         }
-        lazy[idx] = 0; //clear lazy
+        lazy[idx] = 0; // clear lazy
     }
-    void build(int idx, int start, int end) {
-        if (start == end)
-            return;
-        build(LEFT, start, MID);
-        build(RIGHT, MID + 1, end);
-        tree[idx] = merge(tree[LEFT], tree[RIGHT]);
-    }
-    void build(int idx, int start, int end, const vector<T>& arr) {
+    void build(int idx, int start, int end, const vector<int>& a) { // denote that the type of a is INT
         if (start == end) {
-            tree[idx] = arr[start];
+            tree[idx] = node(a[start]); // note: the index of a is START
             return;
         }
-        build(LEFT, start, MID, arr);
-        build(RIGHT, MID + 1, end, arr);
+        build(LEFT, start, MID, a);
+        build(RIGHT, MID + 1, end, a);
         tree[idx] = merge(tree[LEFT], tree[RIGHT]);
     }
-    T query(int idx, int start, int end, int from, int to) {
-        pushdown(idx, start, end);
-        if (from <= start && end <= to)
+    node query(int idx, int start, int end, int l, int r) {
+        push(idx, start, end);
+        if (end < l || start > r)
+            return node(); // return a neutral value that doesn't affect the query
+        if (start >= l && end <= r)
             return tree[idx];
-        if (to <= MID)
-            return query(LEFT, start, MID, from, to);
-        if (MID < from)
-            return query(RIGHT, MID + 1, end, from, to);
-        return merge(query(LEFT, start, MID, from, to),
-                     query(RIGHT, MID + 1, end, from, to));
+        return merge(query(LEFT, start, MID, l, r),
+                       query(RIGHT, MID + 1, end, l, r));
     }
-    void update(int idx, int start, int end, int l, int r, const T& val) {
-        pushdown(idx, start, end);
-        if (r < start || end < l)
+    void update(int idx, int start, int end, int l, int r, int val) { // denote that the type of val is INT
+        push(idx, start, end); // propagate
+        if (end < l || start > r)
             return;
-        if (l <= start && end <= r) {
-            lazy[idx] += val; //update lazy
-            pushdown(idx, start, end);
+        if (start >= l && end <= r) {
+            lazy[idx] = val; // update lazy
+            push(idx, start, end); // propagate
             return;
         }
         update(LEFT, start, MID, l, r, val);
@@ -58,18 +58,18 @@ class SegmentTree { //1-based
         tree[idx] = merge(tree[LEFT], tree[RIGHT]);
     }
 public:
-    SegmentTree(int n) : n(n), tree(n << 2), lazy(n << 2) {}
-    SegmentTree(const vector<T>& v) {
+    SegmentTree(int n): n(n), tree(n << 2), lazy(n << 2) {}
+    SegmentTree(const vector<int>& v) { // denote that the type of v is INT
         n = v.size() - 1;
-        tree = vector<T>(n << 2);
-        lazy = vector<T>(n << 2);
+        tree = vector<node>(n << 2);
+        lazy = vector<int>(n << 2);
         build(1, 1, n, v);
     }
-    T query(int l, int r) {
-        return query(1, 1, n, l, r);
-    }
-    void update(int l, int r, const T& val) {
+    void update(int l, int r, int val) {
         update(1, 1, n, l, r, val);
+    }
+    node query(int l, int r) {
+        return query(1, 1, n, l, r);
     }
 #undef LEFT
 #undef RIGHT
