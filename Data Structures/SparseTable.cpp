@@ -1,6 +1,6 @@
 template<typename T>
 class SparseTable {
-    vector<vector<T>> table;
+    vector<vector<T>> table; // 0-based
 
     // merge function
     T merge(const T a, const T b) {}
