@@ -48,7 +48,7 @@ void buildSCC() {
             tarjan(i);
     }
 }
-void build_dag() {
+void buildDAG() {
     dag.assign(n + 1, vector<int>());
     for (int node = 1; node <= n; ++node) {
         for (auto& child : adj[node]) {
