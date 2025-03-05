@@ -1,12 +1,12 @@
 struct DSU {
     vector<int> rank, parent, size;
     vector<vector<int>> component;
-    int forsets;
+    int forests;
 
     DSU(int n) {
         size = rank = parent = vector<int>(n + 1, 1);
         component = vector<vector<int>>(n + 1);
-        forsets = n;
+        forests = n;
         for (int i = 0; i <= n; i++) {
             parent[i] = i;
             component[i].push_back(i);
@@ -25,7 +25,7 @@ struct DSU {
         component[node].clear();
         if (rank[par] == rank[node])
             rank[par]++;
-        forsets--;
+        forests--;
     }
 
     bool union_sets(int v, int u) {
