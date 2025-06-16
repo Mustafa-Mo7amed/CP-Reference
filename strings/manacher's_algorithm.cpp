@@ -1,4 +1,4 @@
-vector<int> manacher_odd(const string& s) {
+vector<int> manacher_odd(string s) {
     int n = s.size();
     s = "$" + s + "^";
     vector<int> p(n + 2);
