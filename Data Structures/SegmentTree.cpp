@@ -1,7 +1,7 @@
 // implement your custom node
 struct node {
     int mn;
-    node(): mn(OO) {}
+    node(): mn(OO) {} // don't forget to set your neutral value correctly
     node(int mn): mn(mn) {}
 };
 class SegmentTree { // 1-based
