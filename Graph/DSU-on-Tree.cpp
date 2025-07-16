@@ -1,7 +1,12 @@
 // DSU on Tree (Small-to-Large) (Sack) O(n * log(n))
+// you can traverse all the light subtrees from each node in the graph
+// as each node can be part of a light subtree at most log(n) times so the overall complexity is O(n * log(n))
+// so you can solve each subtree independently and leave the heavy subtree's data in the sack (then the parent must use it)
+
 // 1) Define your data structures and global variables in the "// === User Data ===" section.
 // 2) Implement the `update_node(int u, int delta)` function to update your DS state when adding/removing node u.
 // 3) Call `pre()` from your main, after reading input and building the tree.
+
 
 const int N = 1e5 + 5;
 
