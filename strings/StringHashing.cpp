@@ -95,3 +95,52 @@ struct StringHash {
         return (pre[r] - pre[l - 1] + mod) % mod * power[n - l - 1] % mod;
     }
 };
+
+// AI generated
+// 128-bit equivalent pair string hashing (to avoid collisions)
+// when you use M hash codes in a string of length N, the probability of a collision is at most (M^2 * N) / (mod1 * mod2)
+// using two mods greatly reduces collision risk
+struct StringHash {
+    using pll = pair<long long, long long>;
+    const ll mod1 = (1LL << 61) - 1;
+    const ll mod2 = (1LL << 59) - 1;
+    int n{};
+    ll base{};
+    vector<pll> power, pre;
+
+    StringHash() = default;
+    StringHash(const string& s, ll b): n(s.size()), base(b) {
+        power.reserve(n);
+        pre.reserve(n);
+        pll p = {1, 1};
+        for (int i = 0; i < n; ++i) {
+            power.emplace_back(p);
+            pll cur = {s[i] * p.first % mod1, s[i] * p.second % mod2};
+            if (pre.empty()) {
+                pre.emplace_back(cur);
+            } else {
+                pre.emplace_back(make_pair(
+                    (pre.back().first + cur.first) % mod1,
+                    (pre.back().second + cur.second) % mod2
+                ));
+            }
+            p.first = p.first * base % mod1;
+            p.second = p.second * base % mod2;
+        }
+    }
+
+    pll get(int l, int r) {
+        if (l == 0) {
+            return {
+                pre[r].first * power[n - 1].first % mod1,
+                pre[r].second * power[n - 1].second % mod2
+            };
+        }
+        ll hash1 = (pre[r].first - pre[l - 1].first + mod1) % mod1;
+        ll hash2 = (pre[r].second - pre[l - 1].second + mod2) % mod2;
+        return {
+            hash1 * power[n - l - 1].first % mod1,
+            hash2 * power[n - l - 1].second % mod2
+        };
+    }
+};
